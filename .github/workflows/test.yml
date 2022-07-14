@@ -10,15 +10,19 @@ jobs:
   build: # make sure build/ci work properly
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: |
-          npm install
-      - run: |
-          npm run all
-  test: # make sure the action works on a clean machine without building
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./
+      - uses: actions/checkout@v3
+      - name: Install Node
+        uses: actions/setup-node@v3
         with:
-          milliseconds: 1000
+          node-version-file: '.node-version'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Check Typescript
+        uses: EPMatt/reviewdog-action-tsc@v1
+        with:
+          reporter: ${{ github.event_name != 'pull_request' && 'github-check' || 'github-pr-review' }}
+      - name: Check ESLint
+        uses: reviewdog/action-eslint@v1
+        with:
+          reporter: ${{ github.event_name != 'pull_request' && 'github-check' || 'github-pr-review' }}

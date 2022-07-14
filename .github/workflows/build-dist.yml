@@ -1,0 +1,30 @@
+on:
+  push:
+    branches:
+      - release-please--**
+name: 'Build & Push Dist'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Rebuild the dist/ directory
+        run: npm run package
+      - name: update README
+        run: |-
+          MAJOR_VERSION=$(jq -r .version package.json | awk -F. '{ print $1 }')
+          sed -i "s/\(uses: EchelonFour\/pr-parser@\).*/\1v${MAJOR_VERSION}/g" README.md
+      - name: Command and push updates
+        run: |-
+          git config --global user.name "github-actions[bot]"
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md
+          git add dist/
+          git diff-index --quiet HEAD || (git commit -m "chore(main): build dist and update README" && git push origin)
