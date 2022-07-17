@@ -1,6 +1,6 @@
 {
   "name": "pr-parser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Parses github PRs for environment variables and exports them",
   "main": "lib/main.js",
