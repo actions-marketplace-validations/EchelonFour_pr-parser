@@ -1,7 +1,7 @@
-import github from '@actions/github'
+import { context as currentGithubContext, getOctokit } from '@actions/github'
 import { getInput } from '@actions/core'
 
-type Octokit = ReturnType<typeof github.getOctokit>
+type Octokit = ReturnType<typeof getOctokit>
 
 export interface PullRequestContext {
   repo: string
@@ -28,11 +28,11 @@ interface PullRequestQueryResponseData {
 
 export function getCurrentOctokit(): Octokit {
   const token = getInput('GITHUB_TOKEN')
-  return github.getOctokit(token)
+  return getOctokit(token)
 }
 
 export function pullRequestContext(): PullRequestContext {
-  return github.context.issue
+  return currentGithubContext.issue
 }
 
 export async function queryForPRMarkdown(octokit: Octokit, context: PullRequestContext): Promise<string> {
