@@ -6,14 +6,14 @@ This action will scan a PR for certain variables and output them for use later
 
 ## Inputs
 
-### `github_token`
+### `token`
 
-**Required**. Default is `${{ github.token }}`.
+**Required**. Github token for reading PR, defaults to using `${{ github.token }}`.
 
 ## Example usage
 
 ```yml
-name: reviewdog
+name: Create review app
 on: [pull_request]
 jobs:
   build-with-properties:
