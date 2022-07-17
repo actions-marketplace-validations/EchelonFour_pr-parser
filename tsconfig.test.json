@@ -1,6 +1,6 @@
 {
   // extend your base config so you don't have to redefine your compilerOptions
   "extends": "./tsconfig.json",
-  "include": [".prettierrc.cjs", "jest.config.js", "**/*.test.ts"],
+  "include": [".prettierrc.cjs", "jest.config.js", "**/*.test.ts", "**/__mocks__/**/*.ts"],
   "exclude": ["node_modules"]
 }

@@ -6,9 +6,9 @@
   },
   "overrides": [
     {
-      "files": ["**/*.test.*"],
+      "files": ["**/*.test.*", "**/__mocks__/**/*.*"],
       "rules": {
-        "import/no-extraneous-dependencies": "off" // magic number are fun and good in tests
+        "import/no-extraneous-dependencies": "off"
       }
     }
   ]
