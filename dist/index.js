@@ -49,12 +49,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getCurrentPRMarkdown = exports.queryForPRMarkdown = exports.pullRequestContext = exports.getCurrentOctokit = void 0;
-const github_1 = __importDefault(__nccwpck_require__(5438));
+const github_1 = __nccwpck_require__(5438);
 const core_1 = __nccwpck_require__(2186);
 const PR_BODY_QUERY = /* GraphQL */ `
   query ($repo: String!, $owner: String!, $number: Int!) {
@@ -67,11 +64,11 @@ const PR_BODY_QUERY = /* GraphQL */ `
 `;
 function getCurrentOctokit() {
     const token = (0, core_1.getInput)('GITHUB_TOKEN');
-    return github_1.default.getOctokit(token);
+    return (0, github_1.getOctokit)(token);
 }
 exports.getCurrentOctokit = getCurrentOctokit;
 function pullRequestContext() {
-    return github_1.default.context.issue;
+    return github_1.context.issue;
 }
 exports.pullRequestContext = pullRequestContext;
 function queryForPRMarkdown(octokit, context) {
@@ -182,7 +179,7 @@ function parseJSON(token) {
 }
 function parseMarkdown(markdown) {
     const variables = {};
-    (0, marked_1.walkTokens)(marked_1.Lexer.lex(markdown), (token) => {
+    marked_1.marked.walkTokens(marked_1.marked.lexer(markdown), (token) => {
         var _a, _b;
         if (token.type === 'code') {
             if (token.lang === '.env') {
