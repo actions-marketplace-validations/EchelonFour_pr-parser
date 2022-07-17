@@ -1,11 +1,9 @@
 name: 'PR Parser'
 description: 'Parses github PRs for environment variables and exports them'
 author: 'EchelonFour'
-inputs:
-  milliseconds: # change this
-    required: true
-    description: 'input description here'
-    default: 'default value if applicable'
 runs:
   using: 'node16'
   main: 'dist/index.js'
+branding:
+  icon: 'key'
+  color: 'purple'
