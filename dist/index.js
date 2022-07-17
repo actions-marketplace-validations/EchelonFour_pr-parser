@@ -63,7 +63,7 @@ const PR_BODY_QUERY = /* GraphQL */ `
   }
 `;
 function getCurrentOctokit() {
-    const token = (0, core_1.getInput)('GITHUB_TOKEN');
+    const token = (0, core_1.getInput)('token', { required: true });
     return (0, github_1.getOctokit)(token);
 }
 exports.getCurrentOctokit = getCurrentOctokit;
