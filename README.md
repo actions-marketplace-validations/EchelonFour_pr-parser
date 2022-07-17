@@ -1,6 +1,6 @@
 # GitHub Action: PR Parser
 
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/reviewdog/action-eslint?logo=github&sort=semver)](https://github.com/reviewdog/action-eslint/releases)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/EchelonFour/pr-parser?logo=github&sort=semver)](https://github.com/EchelonFour/pr-parser/releases)
 
 This action will scan a PR for certain variables and output them for use later
 
