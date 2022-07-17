@@ -1,5 +1,5 @@
 import { context as currentGithubContext, getOctokit } from '@actions/github'
-import { getInput } from '@actions/core'
+import { getInput, debug, info } from '@actions/core'
 
 type Octokit = ReturnType<typeof getOctokit>
 
@@ -46,5 +46,9 @@ export async function queryForPRMarkdown(octokit: Octokit, context: PullRequestC
 
 export async function getCurrentPRMarkdown(): Promise<string> {
   const octokit = getCurrentOctokit()
-  return queryForPRMarkdown(octokit, pullRequestContext())
+  const result = await queryForPRMarkdown(octokit, pullRequestContext())
+  info('Pull request body downloaded')
+  debug('Full PR Body:')
+  debug(result)
+  return result
 }
