@@ -24,10 +24,13 @@ function getAndSetVariables() {
     return __awaiter(this, void 0, void 0, function* () {
         const markdownFromPR = yield (0, github_1.getCurrentPRMarkdown)();
         const variables = (0, parser_1.parseMarkdown)(markdownFromPR);
+        (0, core_1.startGroup)('Setting environment variables');
         // eslint-disable-next-line security-node/detect-unhandled-async-errors
         for (const key of Object.keys(variables)) {
+            (0, core_1.info)(`Key: ${key} - Value: ${variables[key]}`);
             (0, core_1.setOutput)(key, variables[key]);
         }
+        (0, core_1.endGroup)();
     });
 }
 exports.getAndSetVariables = getAndSetVariables;
@@ -86,7 +89,11 @@ exports.queryForPRMarkdown = queryForPRMarkdown;
 function getCurrentPRMarkdown() {
     return __awaiter(this, void 0, void 0, function* () {
         const octokit = getCurrentOctokit();
-        return queryForPRMarkdown(octokit, pullRequestContext());
+        const result = yield queryForPRMarkdown(octokit, pullRequestContext());
+        (0, core_1.info)('Pull request body downloaded');
+        (0, core_1.debug)('Full PR Body:');
+        (0, core_1.debug)(result);
+        return result;
     });
 }
 exports.getCurrentPRMarkdown = getCurrentPRMarkdown;
@@ -159,29 +166,47 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.parseMarkdown = void 0;
 const marked_1 = __nccwpck_require__(5741);
 const dotenv_1 = __nccwpck_require__(2437);
+const core_1 = __nccwpck_require__(2186);
 const JSON_EXTENSION = '.json';
 function parseDotEnv(token) {
-    return (0, dotenv_1.parse)(token.text);
+    (0, core_1.info)('Parsing .env block');
+    (0, core_1.debug)(token.text);
+    const results = (0, dotenv_1.parse)(token.text);
+    (0, core_1.debug)(`Found results ${JSON.stringify(results)}`);
+    return results;
 }
 function parseJSON(token) {
     var _a;
+    (0, core_1.info)(`Parsing .json block named ${token.lang || 'no name'}`);
     try {
         const key = (_a = token.lang) === null || _a === void 0 ? void 0 : _a.slice(0, token.lang.length - JSON_EXTENSION.length);
         if (!key) {
             throw new Error('cannot read variable name from lang hint');
         }
+        (0, core_1.debug)(`json key from lang: ${key}`);
         const value = JSON.stringify(JSON.parse(token.text));
+        (0, core_1.debug)(`json value: ${value}`);
         return { [key]: value };
     }
-    catch (_b) {
+    catch (thrownError) {
+        if (typeof thrownError === 'string' || thrownError instanceof Error) {
+            (0, core_1.warning)(thrownError);
+        }
+        else {
+            (0, core_1.error)('Error of unknown type thrown while parsing json block');
+        }
+        (0, core_1.debug)('returning nothing to silently fail');
         return {};
     }
 }
 function parseMarkdown(markdown) {
+    (0, core_1.startGroup)('Parsing PR for relevant code blocks');
     const variables = {};
     marked_1.marked.walkTokens(marked_1.marked.lexer(markdown), (token) => {
         var _a, _b;
+        (0, core_1.debug)(`Found markdown block: ${token.type}`);
         if (token.type === 'code') {
+            (0, core_1.debug)(`Found code block with lang: ${token.lang || 'undefined lang'}`);
             if (token.lang === '.env') {
                 Object.assign(variables, parseDotEnv(token));
             }
@@ -190,6 +215,7 @@ function parseMarkdown(markdown) {
             }
         }
     });
+    (0, core_1.endGroup)();
     return variables;
 }
 exports.parseMarkdown = parseMarkdown;
