@@ -27,7 +27,7 @@ interface PullRequestQueryResponseData {
 }
 
 export function getCurrentOctokit(): Octokit {
-  const token = getInput('GITHUB_TOKEN')
+  const token = getInput('token', { required: true })
   return getOctokit(token)
 }
 
