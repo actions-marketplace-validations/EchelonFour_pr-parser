@@ -31,7 +31,9 @@ export function getCurrentOctokit(): Octokit {
   return github.getOctokit(token)
 }
 
-export const pullRequestContext: PullRequestContext = github.context.issue
+export function pullRequestContext(): PullRequestContext {
+  return github.context.issue
+}
 
 export async function queryForPRMarkdown(octokit: Octokit, context: PullRequestContext): Promise<string> {
   const response = await octokit.graphql<PullRequestQueryResponseData | undefined>(PR_BODY_QUERY, { ...context })
@@ -44,5 +46,5 @@ export async function queryForPRMarkdown(octokit: Octokit, context: PullRequestC
 
 export async function getCurrentPRMarkdown(): Promise<string> {
   const octokit = getCurrentOctokit()
-  return queryForPRMarkdown(octokit, pullRequestContext)
+  return queryForPRMarkdown(octokit, pullRequestContext())
 }
