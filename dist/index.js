@@ -28,7 +28,7 @@ function getAndSetVariables() {
         // eslint-disable-next-line security-node/detect-unhandled-async-errors
         for (const key of Object.keys(variables)) {
             (0, core_1.info)(`Key: ${key} - Value: ${variables[key]}`);
-            (0, core_1.setOutput)(key, variables[key]);
+            (0, core_1.exportVariable)(key, variables[key]);
         }
         (0, core_1.endGroup)();
     });
