@@ -1,4 +1,4 @@
-import { endGroup, info, setOutput, startGroup } from '@actions/core'
+import { endGroup, info, exportVariable, startGroup } from '@actions/core'
 import { getCurrentPRMarkdown } from './github'
 import { parseMarkdown } from './parser'
 
@@ -11,7 +11,7 @@ export async function getAndSetVariables(): Promise<void> {
   // eslint-disable-next-line security-node/detect-unhandled-async-errors
   for (const key of Object.keys(variables)) {
     info(`Key: ${key} - Value: ${variables[key]}`)
-    setOutput(key, variables[key])
+    exportVariable(key, variables[key])
   }
   endGroup()
 }
