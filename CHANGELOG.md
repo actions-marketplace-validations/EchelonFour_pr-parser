@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/EchelonFour/pr-parser/compare/v1.0.2...v1.0.3) (2022-07-18)
+
+
+### Bug Fixes
+
+* actually export environment variables ([bd923f0](https://github.com/EchelonFour/pr-parser/commit/bd923f08bf28c9f05d81d5bac5c675dc8e35dd4b))
+
 ## [1.0.2](https://github.com/EchelonFour/pr-parser/compare/v1.0.1...v1.0.2) (2022-07-17)
 
 
