@@ -79,4 +79,12 @@ blockquote=still here
     const values = parseMarkdown(input)
     expect(values).toStrictEqual({})
   })
+
+  describe('generic', () => {
+    test('reads', () => {
+      const input = '```whatever.bingbong\nsomething\n```'
+      const values = parseMarkdown(input, ['bingbong'])
+      expect(values).toStrictEqual({ whatever: 'something' })
+    })
+  })
 })

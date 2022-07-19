@@ -5,11 +5,9 @@ import { parse as parseJson5File } from 'json5'
 import { parse as parseFileName } from 'path'
 
 type CodeBlock = marked.Tokens.Code
+type CodeBlockWithLang = CodeBlock & { lang: string }
 type DotenvCodeBlock = CodeBlock & { lang: '.env' }
 type JSONCodeBlock = CodeBlock & { lang: `${string}.json${'5' | ''}` }
-
-const JSON_EXTENSION = '.json' as const
-const JSON5_EXTENSION = `${JSON_EXTENSION}5` as const
 
 function parseDotEnv(token: DotenvCodeBlock): Record<string, string> {
   info('Parsing .env block')
@@ -37,7 +35,29 @@ function parseJSON(token: JSONCodeBlock, key: string): Record<string, string> {
   }
 }
 
-export function parseMarkdown(markdown: string): Record<string, string> {
+function readGenericFile(token: CodeBlockWithLang, key: string): Record<string, string> {
+  info(`Reading generic block named ${token.lang}`)
+  debug(`key from lang: ${key}`)
+  const value = token.text
+  debug(`value: ${value}`)
+  return { [key]: value }
+}
+
+function parseCodeBlock(token: CodeBlockWithLang, additionalExtensions: string[]): Record<string, string> | null {
+  const langAsFilename = parseFileName(token.lang)
+  const fileExtension = langAsFilename.ext.toLowerCase().slice(1)
+  if (token.lang === '.env') {
+    return parseDotEnv(token as DotenvCodeBlock)
+  }
+  if (langAsFilename.name && (fileExtension === 'json' || fileExtension === 'json5')) {
+    return parseJSON(token as JSONCodeBlock, langAsFilename.name)
+  }
+  if (additionalExtensions.includes(fileExtension)) {
+    return readGenericFile(token, langAsFilename.name)
+  }
+  return null
+}
+export function parseMarkdown(markdown: string, additionalExtensions: string[] = []): Record<string, string> {
   startGroup('Parsing PR for relevant code blocks')
   const variables: Record<string, string> = {}
   marked.walkTokens(marked.lexer(markdown), (token) => {
@@ -45,13 +65,7 @@ export function parseMarkdown(markdown: string): Record<string, string> {
     if (token.type === 'code') {
       debug(`Found code block with lang: ${token.lang || 'undefined lang'}`)
       if (token.lang) {
-        const langAsFilename = parseFileName(token.lang)
-        const fileExtension = langAsFilename.ext.toLowerCase()
-        if (token.lang === '.env') {
-          Object.assign(variables, parseDotEnv(token as DotenvCodeBlock))
-        } else if (langAsFilename.name && (fileExtension === JSON_EXTENSION || fileExtension === JSON5_EXTENSION)) {
-          Object.assign(variables, parseJSON(token as JSONCodeBlock, langAsFilename.name))
-        }
+        Object.assign(variables, parseCodeBlock(token as CodeBlockWithLang, additionalExtensions))
       }
     }
   })

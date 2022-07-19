@@ -51,6 +51,17 @@ The json parser is [JSON5](https://json5.org), so you can include comments and w
 ```
 ````
 
+### Generic
+
+You can also supply additional extensions to the action that will just be read and placed into a variable. Like JSON, but without any compressing.
+
+````
+```KEY_NAME.bingbong
+bing bong data
+with multiple lines
+```
+````
+
 ### Multiple types
 
 You can combine as many .env or json code blocks as you like and they will all be parsed in order and merged together. If you have any duplicate keys, then the later ones will override.
@@ -60,6 +71,10 @@ You can combine as many .env or json code blocks as you like and they will all b
 ### `markdown`
 
 **Required**. Markdown body to parse, defaults to using event pull request body.
+
+### `additionalExtensions`
+
+Comma separated list of extensions to load. Eg `txt,variable` will also load `key.txt` and `key.variable` code blocks.
 
 ## Example usage
 

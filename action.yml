@@ -6,6 +6,9 @@ inputs:
     description: 'Markdown body to parse, defaults to using event pull request body'
     required: false
     default: ${{ github.event.pull_request.body }}
+  additionalExtensions:
+    description: 'comma separated list of file types to load into environment'
+    required: false
 runs:
   using: 'node16'
   main: 'dist/index.js'
