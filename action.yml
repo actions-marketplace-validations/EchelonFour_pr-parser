@@ -2,10 +2,10 @@ name: 'PR Parser'
 description: 'Parses github PRs for environment variables and exports them'
 author: 'EchelonFour'
 inputs:
-  markdown:
-    description: 'Markdown body to parse, defaults to using event pull request body'
+  token:
+    description: 'Github token for reading PR, defaults to using secrets.GITHUB_TOKEN'
     required: false
-    default: ${{ github.event.pull_request.body }}
+    default: ${{ github.token }}
   additionalExtensions:
     description: 'comma separated list of file types to load into environment'
     required: false

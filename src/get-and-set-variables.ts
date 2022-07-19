@@ -3,7 +3,7 @@ import { getAdditionalExtensions, getCurrentPRMarkdown } from './github'
 import { parseMarkdown } from './parser'
 
 export async function getAndSetVariables(): Promise<void> {
-  const markdownFromPR = getCurrentPRMarkdown()
+  const markdownFromPR = await getCurrentPRMarkdown()
   const additionalExtensions = getAdditionalExtensions()
 
   const variables = parseMarkdown(markdownFromPR, additionalExtensions)

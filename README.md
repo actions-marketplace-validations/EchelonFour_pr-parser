@@ -68,9 +68,9 @@ You can combine as many .env or json code blocks as you like and they will all b
 
 ## Inputs
 
-### `markdown`
+### `token`
 
-**Required**. Markdown body to parse, defaults to using event pull request body.
+**Required**. Github token for reading PR, defaults to using `${{ github.token }}`. Required, but best to not try setting it.
 
 ### `additionalExtensions`
 

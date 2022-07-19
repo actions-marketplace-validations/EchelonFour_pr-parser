@@ -15,7 +15,7 @@ const mockedParseMarkdown = jest.mocked(parseMarkdown)
 
 describe('get and set functions', () => {
   test('runs and sets appropriate values', async () => {
-    mockedGetCurrentPRMarkdown.mockReturnValue('```.env\ncool=wow\n```')
+    mockedGetCurrentPRMarkdown.mockResolvedValue('```.env\ncool=wow\n```')
     mockedParseMarkdown.mockReturnValue({ cool: 'wow', yes: 'stuff' })
     mockedGetAdditionalExtensions.mockReturnValue(['wowza', 'beans'])
     await getAndSetVariables()
