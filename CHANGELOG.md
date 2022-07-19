@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/EchelonFour/pr-parser/compare/v1.1.0...v1.2.0) (2022-07-19)
+
+
+### Features
+
+* get markdown from optional input ([efc146d](https://github.com/EchelonFour/pr-parser/commit/efc146db0797b00988f9e01339c9e323b404a366))
+
 ## [1.1.0](https://github.com/EchelonFour/pr-parser/compare/v1.0.3...v1.1.0) (2022-07-19)
 
 
