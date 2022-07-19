@@ -1,54 +1,33 @@
-import { context as currentGithubContext, getOctokit } from '@actions/github'
-import { getInput, debug, info } from '@actions/core'
+import { debug } from '@actions/core'
+import { readFile } from 'fs/promises'
+import type { PullRequestEvent } from '@octokit/webhooks-types'
 
-type Octokit = ReturnType<typeof getOctokit>
-
-export interface PullRequestContext {
-  repo: string
-  owner: string
-  number: number
-}
-
-const PR_BODY_QUERY = /* GraphQL */ `
-  query ($repo: String!, $owner: String!, $number: Int!) {
-    repository(name: $repo, owner: $owner) {
-      pullRequest(number: $number) {
-        body
-      }
-    }
+async function extractPayload(): Promise<PullRequestEvent> {
+  const path = process.env.GITHUB_EVENT_PATH
+  if (!path) {
+    throw new Error(`GITHUB_EVENT_PATH environment variable does not exist`)
   }
-`
-interface PullRequestQueryResponseData {
-  repository?: {
-    pullRequest?: {
-      body?: string
-    }
+  try {
+    const eventFile = await readFile(path, { encoding: 'utf8' })
+    return JSON.parse(eventFile) as PullRequestEvent
+  } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    throw new Error(`Could not read event payload file ${error}`)
   }
-}
-
-export function getCurrentOctokit(): Octokit {
-  const token = getInput('token', { required: true })
-  return getOctokit(token)
-}
-
-export function pullRequestContext(): PullRequestContext {
-  return currentGithubContext.issue
-}
-
-export async function queryForPRMarkdown(octokit: Octokit, context: PullRequestContext): Promise<string> {
-  const response = await octokit.graphql<PullRequestQueryResponseData | undefined>(PR_BODY_QUERY, { ...context })
-  const body = response?.repository?.pullRequest?.body
-  if (body == null) {
-    throw new Error(`failed to read PR body from github, raw response was ${JSON.stringify(response)}`)
-  }
-  return body
 }
 
 export async function getCurrentPRMarkdown(): Promise<string> {
-  const octokit = getCurrentOctokit()
-  const result = await queryForPRMarkdown(octokit, pullRequestContext())
-  info('Pull request body downloaded')
+  if (process.env.GITHUB_EVENT_NAME !== 'pull_request') {
+    throw new Error('this action only supports pull request triggers')
+  }
+
+  const context = await extractPayload()
+  const body = context.pull_request?.body
+  if (body == null) {
+    throw new Error('could not find body of pull request in event payload')
+  }
   debug('Full PR Body:')
-  debug(result)
-  return result
+  debug(body)
+
+  return body
 }
