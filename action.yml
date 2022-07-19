@@ -1,11 +1,6 @@
 name: 'PR Parser'
 description: 'Parses github PRs for environment variables and exports them'
 author: 'EchelonFour'
-inputs:
-  token:
-    description: 'Github token for reading PR, defaults to using secrets.GITHUB_TOKEN'
-    required: false
-    default: ${{ github.token }}
 runs:
   using: 'node16'
   main: 'dist/index.js'

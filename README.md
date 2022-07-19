@@ -44,12 +44,6 @@ It will parse and compress the object and put it in the variable `KEY_NAME`. The
 
 You can combine as many .env or json code blocks as you like and they will all be parsed in order and merged together. If you have any duplicate keys, then the later ones will override.
 
-## Inputs
-
-### `token`
-
-**Required**. Github token for reading PR, defaults to using `${{ github.token }}`. Required, but best to not try setting it.
-
 ## Example usage
 
 ```yml
