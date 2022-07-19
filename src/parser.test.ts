@@ -1,4 +1,4 @@
-import { expect, test, describe } from '@jest/globals'
+import { expect, test, describe, jest } from '@jest/globals'
 import { parseMarkdown } from './parser'
 
 describe('parser', () => {
@@ -31,12 +31,22 @@ describe('parser', () => {
       const values = parseMarkdown(input)
       expect(values).toStrictEqual({})
     })
+    test('wild and crazy behaviour marches on', async () => {
+      const input = '```sick.json\n{"wow": "cool!"}\n```'
+      jest.spyOn(JSON, 'stringify').mockImplementationOnce(() => {
+        // eslint-disable-next-line @typescript-eslint/no-throw-literal
+        throw 69
+      })
+      const values = parseMarkdown(input)
+      expect(values).toStrictEqual({})
+    })
   })
   test('parses complex trees of many types', async () => {
     const input = `
 # header
 > \`\`\`.env
-blockquote=still here
+>   blockquote=still here
+> \`\`\`
 1. Lists
     1. Fenced:
         \`\`\`fenced.JsOn
@@ -45,5 +55,18 @@ blockquote=still here
 `
     const values = parseMarkdown(input)
     expect(values).toStrictEqual({ blockquote: 'still here', fenced: '{"exists":"still"}' })
+  })
+
+  test('ignores other code blocks', async () => {
+    const input = `
+\`\`\`
+blockquote=still here
+\`\`\`
+\`\`\`javascript
+{"exists":"still"}
+\`\`\`
+`
+    const values = parseMarkdown(input)
+    expect(values).toStrictEqual({})
   })
 })

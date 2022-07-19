@@ -2,9 +2,13 @@ import { marked } from 'marked'
 import { parse } from 'dotenv'
 import { debug, info, warning, error, startGroup, endGroup } from '@actions/core'
 
-const JSON_EXTENSION = '.json'
+type CodeBlock = marked.Tokens.Code
+type DotenvCodeBlock = CodeBlock & { lang: '.env' }
+type JSONCodeBlock = CodeBlock & { lang: `${string}.json` }
 
-function parseDotEnv(token: marked.Tokens.Code): Record<string, string> {
+const JSON_EXTENSION = '.json' as const
+
+function parseDotEnv(token: DotenvCodeBlock): Record<string, string> {
   info('Parsing .env block')
   debug(token.text)
   const results = parse(token.text)
@@ -12,8 +16,8 @@ function parseDotEnv(token: marked.Tokens.Code): Record<string, string> {
   return results
 }
 
-function parseJSON(token: marked.Tokens.Code): Record<string, string> {
-  info(`Parsing .json block named ${token.lang || 'no name'}`)
+function parseJSON(token: JSONCodeBlock): Record<string, string> {
+  info(`Parsing .json block named ${token.lang}`)
   try {
     const key = token.lang?.slice(0, token.lang.length - JSON_EXTENSION.length)
     if (!key) {
@@ -42,9 +46,9 @@ export function parseMarkdown(markdown: string): Record<string, string> {
     if (token.type === 'code') {
       debug(`Found code block with lang: ${token.lang || 'undefined lang'}`)
       if (token.lang === '.env') {
-        Object.assign(variables, parseDotEnv(token))
+        Object.assign(variables, parseDotEnv(token as DotenvCodeBlock))
       } else if (token.lang?.toLowerCase()?.endsWith(JSON_EXTENSION)) {
-        Object.assign(variables, parseJSON(token))
+        Object.assign(variables, parseJSON(token as JSONCodeBlock))
       }
     }
   })
