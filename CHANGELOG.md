@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/EchelonFour/pr-parser/compare/v1.2.0...v1.3.0) (2022-07-19)
+
+
+### Features
+
+* add generic file loader ([ed1f941](https://github.com/EchelonFour/pr-parser/commit/ed1f941c3021169f860250d9653835f3298bc0ef))
+* support more json syntax ([c963b93](https://github.com/EchelonFour/pr-parser/commit/c963b93e763b65fb8843e9f0404d2d733733933d))
+
+
+### Bug Fixes
+
+* download PR body so edits are seen on re-runs ([158bd40](https://github.com/EchelonFour/pr-parser/commit/158bd40e5d33797bd479db2e28097b6a274caed6))
+
 ## [1.2.0](https://github.com/EchelonFour/pr-parser/compare/v1.1.0...v1.2.0) (2022-07-19)
 
 
