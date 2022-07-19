@@ -40,6 +40,17 @@ You can also include json files.
 
 It will parse and compress the object and put it in the variable `KEY_NAME`. The file name can be anything you like, just be sure to end it with `.json` and it will be included.
 
+The json parser is [JSON5](https://json5.org), so you can include comments and whatnot and it will compress back down to standard json.
+
+````
+```KEY_NAME.json
+{
+  json: "data", //comments
+  "with values": +5,
+}
+```
+````
+
 ### Multiple types
 
 You can combine as many .env or json code blocks as you like and they will all be parsed in order and merged together. If you have any duplicate keys, then the later ones will override.

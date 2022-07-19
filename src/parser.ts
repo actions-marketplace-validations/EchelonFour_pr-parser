@@ -1,30 +1,29 @@
 import { marked } from 'marked'
-import { parse } from 'dotenv'
+import { parse as parseDotenvFile } from 'dotenv'
 import { debug, info, warning, error, startGroup, endGroup } from '@actions/core'
+import { parse as parseJson5File } from 'json5'
+import { parse as parseFileName } from 'path'
 
 type CodeBlock = marked.Tokens.Code
 type DotenvCodeBlock = CodeBlock & { lang: '.env' }
-type JSONCodeBlock = CodeBlock & { lang: `${string}.json` }
+type JSONCodeBlock = CodeBlock & { lang: `${string}.json${'5' | ''}` }
 
 const JSON_EXTENSION = '.json' as const
+const JSON5_EXTENSION = `${JSON_EXTENSION}5` as const
 
 function parseDotEnv(token: DotenvCodeBlock): Record<string, string> {
   info('Parsing .env block')
   debug(token.text)
-  const results = parse(token.text)
+  const results = parseDotenvFile(token.text)
   debug(`Found results ${JSON.stringify(results)}`)
   return results
 }
 
-function parseJSON(token: JSONCodeBlock): Record<string, string> {
+function parseJSON(token: JSONCodeBlock, key: string): Record<string, string> {
   info(`Parsing .json block named ${token.lang}`)
   try {
-    const key = token.lang?.slice(0, token.lang.length - JSON_EXTENSION.length)
-    if (!key) {
-      throw new Error('cannot read variable name from lang hint')
-    }
     debug(`json key from lang: ${key}`)
-    const value = JSON.stringify(JSON.parse(token.text))
+    const value = JSON.stringify(parseJson5File(token.text))
     debug(`json value: ${value}`)
     return { [key]: value }
   } catch (thrownError) {
@@ -45,10 +44,14 @@ export function parseMarkdown(markdown: string): Record<string, string> {
     debug(`Found markdown block: ${token.type}`)
     if (token.type === 'code') {
       debug(`Found code block with lang: ${token.lang || 'undefined lang'}`)
-      if (token.lang === '.env') {
-        Object.assign(variables, parseDotEnv(token as DotenvCodeBlock))
-      } else if (token.lang?.toLowerCase()?.endsWith(JSON_EXTENSION)) {
-        Object.assign(variables, parseJSON(token as JSONCodeBlock))
+      if (token.lang) {
+        const langAsFilename = parseFileName(token.lang)
+        const fileExtension = langAsFilename.ext.toLowerCase()
+        if (token.lang === '.env') {
+          Object.assign(variables, parseDotEnv(token as DotenvCodeBlock))
+        } else if (langAsFilename.name && (fileExtension === JSON_EXTENSION || fileExtension === JSON5_EXTENSION)) {
+          Object.assign(variables, parseJSON(token as JSONCodeBlock, langAsFilename.name))
+        }
       }
     }
   })

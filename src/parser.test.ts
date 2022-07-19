@@ -21,6 +21,16 @@ describe('parser', () => {
       const values = parseMarkdown(input)
       expect(values).toStrictEqual({ RAD: '{"wow":"cool!"}' })
     })
+    test('json5 syntax allowed', async () => {
+      const input = '```RAD.json5\n{wow: "cool!",// comment\n}\n```'
+      const values = parseMarkdown(input)
+      expect(values).toStrictEqual({ RAD: '{"wow":"cool!"}' })
+    })
+    test('json and json5 interchangable', async () => {
+      const input = '```RAD.json\n{wow: "cool!",// comment\n}\n```'
+      const values = parseMarkdown(input)
+      expect(values).toStrictEqual({ RAD: '{"wow":"cool!"}' })
+    })
     test('invalid values return nothing', async () => {
       const input = '```sick.json\nnot valid\n```'
       const values = parseMarkdown(input)
