@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/EchelonFour/pr-parser/compare/v1.0.3...v1.1.0) (2022-07-19)
+
+
+### Features
+
+* remove github client and just get data from event payload ([5b2fb23](https://github.com/EchelonFour/pr-parser/commit/5b2fb233749742ed2ff78ab6fd4583c86f93d7b7))
+
 ## [1.0.3](https://github.com/EchelonFour/pr-parser/compare/v1.0.2...v1.0.3) (2022-07-18)
 
 
