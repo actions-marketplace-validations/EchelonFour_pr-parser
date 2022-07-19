@@ -18,13 +18,13 @@ async function extractPayload(): Promise<PullRequestEvent> {
 
 export async function getCurrentPRMarkdown(): Promise<string> {
   if (process.env.GITHUB_EVENT_NAME !== 'pull_request') {
-    throw new Error('this action only supports pull request triggers')
+    throw new Error('This action only supports pull request triggers')
   }
 
   const context = await extractPayload()
   const body = context.pull_request?.body
   if (body == null) {
-    throw new Error('could not find body of pull request in event payload')
+    throw new Error('Could not find body of pull request in event payload')
   }
   debug('Full PR Body:')
   debug(body)
