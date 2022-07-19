@@ -12,11 +12,11 @@ const core_1 = __nccwpck_require__(186);
 const github_1 = __nccwpck_require__(928);
 const parser_1 = __nccwpck_require__(267);
 async function getAndSetVariables() {
-    const markdownFromPR = await (0, github_1.getCurrentPRMarkdown)();
+    const markdownFromPR = (0, github_1.getCurrentPRMarkdown)();
     const variables = (0, parser_1.parseMarkdown)(markdownFromPR);
     (0, core_1.startGroup)('Setting environment variables');
-    // eslint-disable-next-line security-node/detect-unhandled-async-errors
     for (const key of Object.keys(variables)) {
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         (0, core_1.info)(`Key: ${key} - Value: ${variables[key]}`);
         (0, core_1.exportVariable)(key, variables[key]);
     }
@@ -35,30 +35,8 @@ exports.getAndSetVariables = getAndSetVariables;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getCurrentPRMarkdown = void 0;
 const core_1 = __nccwpck_require__(186);
-const promises_1 = __nccwpck_require__(292);
-async function extractPayload() {
-    const path = process.env.GITHUB_EVENT_PATH;
-    if (!path) {
-        throw new Error(`GITHUB_EVENT_PATH environment variable does not exist`);
-    }
-    try {
-        const eventFile = await (0, promises_1.readFile)(path, { encoding: 'utf8' });
-        return JSON.parse(eventFile);
-    }
-    catch (error) {
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        throw new Error(`Could not read event payload file ${error}`);
-    }
-}
-async function getCurrentPRMarkdown() {
-    if (process.env.GITHUB_EVENT_NAME !== 'pull_request') {
-        throw new Error('This action only supports pull request triggers');
-    }
-    const context = await extractPayload();
-    const body = context.pull_request?.body;
-    if (body == null) {
-        throw new Error('Could not find body of pull request in event payload');
-    }
+function getCurrentPRMarkdown() {
+    const body = (0, core_1.getInput)('markdown', { required: true });
     (0, core_1.debug)('Full PR Body:');
     (0, core_1.debug)(body);
     return body;
@@ -2332,14 +2310,6 @@ module.exports = require("events");
 
 "use strict";
 module.exports = require("fs");
-
-/***/ }),
-
-/***/ 292:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("fs/promises");
 
 /***/ }),
 
