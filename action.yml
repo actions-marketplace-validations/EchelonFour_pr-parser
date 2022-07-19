@@ -1,6 +1,11 @@
 name: 'PR Parser'
 description: 'Parses github PRs for environment variables and exports them'
 author: 'EchelonFour'
+inputs:
+  markdown:
+    description: 'Markdown body to parse, defaults to using event pull request body'
+    required: false
+    default: ${{ github.event.pull_request.body }}
 runs:
   using: 'node16'
   main: 'dist/index.js'

@@ -44,6 +44,12 @@ It will parse and compress the object and put it in the variable `KEY_NAME`. The
 
 You can combine as many .env or json code blocks as you like and they will all be parsed in order and merged together. If you have any duplicate keys, then the later ones will override.
 
+## Inputs
+
+### `markdown`
+
+**Required**. Markdown body to parse, defaults to using event pull request body.
+
 ## Example usage
 
 ```yml
