@@ -32,7 +32,7 @@
   "devDependencies": {
     "@types/marked": "^4.0.7",
     "@types/node": "^16.11.45",
-    "@vercel/ncc": "^0.34.0",
+    "@vercel/ncc": "^0.36.1",
     "eslint": "^8.25.0",
     "eslint-config-intolerable-style-guide": "^4.0.0",
     "jest": "^28.1.3",
