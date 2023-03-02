@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@types/marked": "^4.0.7",
-    "@types/node": "^16.11.45",
+    "@types/node": "^18.14.4",
     "@vercel/ncc": "^0.34.0",
     "eslint": "^8.25.0",
     "eslint-config-intolerable-style-guide": "^4.0.0",
